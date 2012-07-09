@@ -31,7 +31,7 @@ func passwordAuthenticate(ctx *soggy.Context) (int, string) {
   if config.Password != "" {
     headers := ctx.Req.Header
     if (headers.Get("Authorization") != config.Password) {
-      return 400, "Invalid password"
+      return 403, "Invalid password"
     }
   }
   ctx.Next(nil)
