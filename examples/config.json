@@ -1,0 +1,31 @@
+{
+  "name": "skinny",
+  "description": "Danny's MacBook Air",
+  "host": "0.0.0.0",
+  "port": "9999",
+  "password": "iamveryinsecure",
+  "commands": [
+    {
+      "shortName": "restart",
+      "title": "Restart",
+      "description": "Restart skinny",
+      "exec": [
+        {
+          "cmd": "echo",
+          "args": [ "sudo shutdown -r now" ]
+        }
+      ]
+    },
+    {
+      "shortName": "shutdown",
+      "title": "Shutdown",
+      "description": "Shutdown skinny",
+      "exec": [
+        {
+          "cmd": "echo",
+          "args": [ "sudo shutdown -h now" ]
+        }
+      ]
+    }
+  ]
+}
