@@ -44,7 +44,7 @@ func info() interface{} {
 }
 
 func listCommands() interface{} {
-  return config.Commands
+  return map[string]interface{} { "commands": config.Commands }
 }
 
 func executeCommand(ctx *soggy.Context, commandName string) (err error) {
