@@ -1,6 +1,6 @@
 {
-  "name": "skinny",
-  "description": "Danny's MacBook Air",
+  "name": "george",
+  "description": "Desktop",
   "host": "0.0.0.0",
   "port": "9999",
   "password": "iamveryinsecure",
@@ -8,22 +8,22 @@
     {
       "shortName": "restart",
       "title": "Restart",
-      "description": "Restart skinny",
+      "description": "Restart george",
       "exec": [
         {
-          "cmd": "echo",
-          "args": [ "sudo shutdown -r now" ]
+          "cmd": "bash",
+          "args": [ "-c", "sudo shutdown -r now" ]
         }
       ]
     },
     {
       "shortName": "shutdown",
       "title": "Shutdown",
-      "description": "Shutdown skinny",
+      "description": "Shutdown george",
       "exec": [
         {
-          "cmd": "echo",
-          "args": [ "sudo shutdown -h now" ]
+          "cmd": "bash",
+          "args": [ "-c", "sudo shutdown -h now" ]
         }
       ]
     }
