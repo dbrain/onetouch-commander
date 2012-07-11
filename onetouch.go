@@ -38,6 +38,11 @@ func passwordAuthenticate(ctx *soggy.Context) (int, string) {
   return -1, ""
 }
 
+func info() interface{} {
+  return map[string]interface{} {
+    "passwordRequired": config.Password != "" }
+}
+
 func listCommands() interface{} {
   return config.Commands
 }
@@ -73,6 +78,7 @@ func startServer() {
 
   server.Get("/commands", passwordAuthenticate, listCommands)
   server.Post("/commands/(.*)", passwordAuthenticate, executeCommand)
+  server.Get("/info", info)
 
   server.Use(server.Router)
   app.Listen(config.Host + ":" + config.Port)
