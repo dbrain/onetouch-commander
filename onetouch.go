@@ -77,7 +77,7 @@ func startServer() {
   app, server := soggy.NewDefaultApp()
 
   server.Get("/commands", passwordAuthenticate, listCommands)
-  server.Post("/commands/(.*)", passwordAuthenticate, executeCommand)
+  server.Get("/commands/(.*)", passwordAuthenticate, executeCommand)
   server.Get("/info", info)
 
   server.Use(server.Router)
