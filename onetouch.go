@@ -19,6 +19,7 @@ type Config struct {
     ShortName string `json:"shortName,omitempty"`
     Title string `json:"title,omitempty"`
     Description string `json:"description,omitempty"`
+    FailOnError bool `json:"failOnError,omitempty"`
     Exec []struct {
       Cmd string `json:"cmd,omitempty"`
       Args []string `json:"args,omitempty"`
@@ -54,13 +55,13 @@ func executeCommand(ctx *soggy.Context, commandName string) (err error) {
         cmd := exec.Command(cmdToExecute.Cmd, cmdToExecute.Args...)
 
         stdout, err := cmd.StdoutPipe()
-        if (err != nil) { return err }
+        if (err != nil && command.FailOnError) { return err }
 
         stderr, err := cmd.StderrPipe()
-        if (err != nil) { return err }
+        if (err != nil && command.FailOnError) { return err }
 
         err = cmd.Start()
-        if (err != nil) { return err }
+        if (err != nil && command.FailOnError) { return err }
 
         go io.Copy(ctx.Res, stdout)
         go io.Copy(ctx.Res, stderr)
