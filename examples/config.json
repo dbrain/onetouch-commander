@@ -1,14 +1,44 @@
 {
-  "name": "george",
-  "description": "Desktop",
+  "name": "snorlax",
+  "description": "Laptop in lounge",
   "host": "0.0.0.0",
   "port": "9999",
   "password": "iamveryinsecure",
   "commands": [
     {
+      "shortName": "update",
+      "title": "Apt Update",
+      "description": "Run apt-update on george",
+      "exec": [
+        {
+          "cmd": "bash",
+          "args": [ "-c", "sudo apt-get -qq update" ]
+        },
+        {
+          "cmd": "bash",
+          "args": [ "-c", "sudo apt-get -yq dist-upgrade" ]
+        }
+       ]
+    },
+    {
+      "shortName": "restart-xbmc",
+      "title": "Restart XBMC",
+      "description": "Restart XBMC on snorlax",
+      "exec": [
+        {
+          "cmd": "bash",
+          "args": [ "-c", "killall xbmc.bin" ]
+        },
+        {
+          "cmd": "bash",
+          "args": [ "-c", "env DISPLAY=\":0.0\" nohup xbmc &" ]
+        }
+       ]
+    },
+    {
       "shortName": "restart",
       "title": "Restart",
-      "description": "Restart george",
+      "description": "Restart snorlax",
       "exec": [
         {
           "cmd": "bash",
@@ -19,7 +49,7 @@
     {
       "shortName": "shutdown",
       "title": "Shutdown",
-      "description": "Shutdown george",
+      "description": "Shutdown snorlax",
       "exec": [
         {
           "cmd": "bash",
