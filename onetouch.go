@@ -7,7 +7,14 @@ import (
   "os/exec"
   "io/ioutil"
   "io"
+  "errors"
+  "fmt"
 )
+
+type CommandLine struct {
+  Cmd string `json:"cmd,omitempty"`
+  Args []string `json:"args,omitempty"`
+}
 
 type Config struct {
   Name string
@@ -20,10 +27,7 @@ type Config struct {
     Title string `json:"title,omitempty"`
     Description string `json:"description,omitempty"`
     FailOnError bool `json:"failOnError,omitempty"`
-    Exec []struct {
-      Cmd string `json:"cmd,omitempty"`
-      Args []string `json:"args,omitempty"`
-    } `json:"exec,omitempty"`
+    Exec []CommandLine `json:"exec,omitempty"`
   }
 }
 var config *Config
@@ -48,25 +52,32 @@ func listCommands() interface{} {
   return map[string]interface{} { "commands": config.Commands }
 }
 
+func executeCommandLine(ctx *soggy.Context, cmdToExecute CommandLine) (err error) {
+  defer func() {
+    if recovered := recover(); recovered != nil { err = errors.New(recovered.(string)) }
+  }()
+  cmd := exec.Command(cmdToExecute.Cmd, cmdToExecute.Args...)
+  stdout, err := cmd.StdoutPipe()
+  stderr, err := cmd.StderrPipe()
+  err = cmd.Start()
+  go io.Copy(ctx.Res, stdout)
+  go io.Copy(ctx.Res, stderr)
+  err = cmd.Wait()
+  return err
+}
+
 func executeCommand(ctx *soggy.Context, commandName string) (err error) {
   for _, command := range config.Commands {
     if command.ShortName == commandName {
       for _, cmdToExecute := range command.Exec {
-        cmd := exec.Command(cmdToExecute.Cmd, cmdToExecute.Args...)
-
-        stdout, err := cmd.StdoutPipe()
-        if (err != nil && command.FailOnError) { return err }
-
-        stderr, err := cmd.StderrPipe()
-        if (err != nil && command.FailOnError) { return err }
-
-        err = cmd.Start()
-        if (err != nil && command.FailOnError) { return err }
-
-        go io.Copy(ctx.Res, stdout)
-        go io.Copy(ctx.Res, stderr)
-        return cmd.Wait()
+        err = executeCommandLine(ctx, cmdToExecute)
+        if (err != nil && command.FailOnError) {
+          return err
+        } else if (err != nil) {
+          ctx.Res.WriteString(fmt.Sprintln(cmdToExecute.Cmd, cmdToExecute.Args, "failed with", err))
+        }
       }
+      return nil
     }
   }
   ctx.Res.WriteHeader(404)
